@@ -1,13 +1,14 @@
 #include <iostream>
 #include <string>
-#include <vector>
+#include "getNumber.h"
 #include <fstream>
+#include <cstdlib>
 using namespace std;
 
 const int teacherTests = 5;
 enum choices {add = 1, remove_std, display, search_std, results, quit};
 ofstream stdFile;
-
+// Student Struct
 struct Student {
     string name;
     int stdId;
@@ -15,8 +16,37 @@ struct Student {
     int* stdScore = new int[numOfTests];
     int stdAvg;
 };
-
+// Get student count
+int getNumber() {
+    ifstream fin;
+    fin.open("student.dat");
+    if (fin.fail()) {
+        cout << "File error." << endl;
+        exit(1);
+    }
+    int count = 0;
+    string line;
+    while(!fin.eof()) {
+        getline(fin, line);
+        ++count;
+    }
+    fin.close();
+    cout << "Number of students = " << count << endl;
+    return(count);
+}
+// Check if student file is open
+void fileCheck() {
+    if (!stdFile.is_open()) {
+        cout << "Error opening the file!\n";
+        exit(EXIT_FAILURE);
+    } else {
+        cout << "Student file opened.\n";
+    }
+}
+// Add student to file
 void add_student() {
+    stdFile.open("student.dat", ios::app);
+    fileCheck();
     Student tempStudent;
     string tempFirstName;
     string tempLastName;
@@ -35,35 +65,40 @@ void add_student() {
         cout << "Enter Score " << (i + 1) << ": ";
         cin >> tempStudent.stdScore[i];
     }
-
     // write all the values into student.dat
     stdFile << tempFirstName << "," << tempLastName << ",";
     stdFile << tempStudent.stdId << "," << tempStudent.numOfTests << ",";
     for (int i = 0; i < tempStudent.numOfTests; ++i) {
         stdFile << tempStudent.stdScore[i] << ",";
     }
+    cout << "Student instance created. Exiting...\n";
+    stdFile.close();
+}
+// Remove student from file
+void remove_student(int stdID) {
+
+
 }
 
 int main() {
     int userInt;
     int userId;
     bool menuRepeat = true; 
-    stdFile.open("student.dat");
 
     while (menuRepeat) {
 
-    // Display menu
-    printf("1. Add a new student record\n");
-    printf("2. Remove an existing student record\n");
-    printf("3. Display all records\n");
-    printf("4. Search for student using Student ID\n");
-    printf("5. Export the results to a disk file\n");
-    printf("6. Quit the program\n");
-    printf("Enter choice: ");
-    scanf("%d", &userInt);
+        // Display menu
+        printf("\n----------------Student Database----------------\n\n");
+        printf("1. Add a new student record\n");
+        printf("2. Remove an existing student record\n");
+        printf("3. Display all records\n");
+        printf("4. Search for student using Student ID\n");
+        printf("5. Export the results to a disk file\n");
+        printf("6. Quit the program\n");
+        printf("Enter choice: ");
+        scanf("%d", &userInt);
 
-
-
+        // Display menu functionality
         switch (userInt) {
             case add: {
                 add_student();
@@ -71,9 +106,8 @@ int main() {
             }
             case remove_std: {
                 cout << "Enter the Student ID: ";
-                scanf("%d", &userId); // Use cin for input
-                // Placeholder for remove_student functionality
-                cout << "Remove student functionality\n";
+                cin >> userId;
+                remove_student(userId);
                 break;
             }
             case display: {
