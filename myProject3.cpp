@@ -1,22 +1,54 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 using namespace std;
 
-const int numOfTests = 5;
+const int teacherTests = 5;
 enum choices {add = 1, remove_std, display, search_std, results, quit};
+ofstream stdFile;
 
 struct Student {
     string name;
     int stdId;
-    int*  stdScore = new int[numOfTests];
+    int numOfTests;
+    int* stdScore = new int[numOfTests];
     int stdAvg;
 };
+
+void add_student() {
+    Student tempStudent;
+    string tempFirstName;
+    string tempLastName;
+
+    // get values from user
+    cout << "Enter student first name: ";
+    cin >> tempFirstName;
+    cout << "Enter student last name: ";
+    cin >> tempLastName;
+    cout << "Enter Student ID: ";
+    cin >> tempStudent.stdId;
+    cout << "Enter number of tests taken by the student: ";
+    cin >> tempStudent.numOfTests;
+    printf("Enter tests scores of the student \n");
+    for (int i = 0; i < tempStudent.numOfTests; ++i) {
+        cout << "Enter Score " << (i + 1) << ": ";
+        cin >> tempStudent.stdScore[i];
+    }
+
+    // write all the values into student.dat
+    stdFile << tempFirstName << "," << tempLastName << ",";
+    stdFile << tempStudent.stdId << "," << tempStudent.numOfTests << ",";
+    for (int i = 0; i < tempStudent.numOfTests; ++i) {
+        stdFile << tempStudent.stdScore[i] << ",";
+    }
+}
 
 int main() {
     int userInt;
     int userId;
     bool menuRepeat = true; 
+    stdFile.open("student.dat");
 
     while (menuRepeat) {
 
@@ -34,13 +66,12 @@ int main() {
 
         switch (userInt) {
             case add: {
-                // Placeholder for add_student functionality
-                cout << "Add student functionality\n";
+                add_student();
                 break;
             }
             case remove_std: {
                 cout << "Enter the Student ID: ";
-                cin >> userId; // Use cin for input
+                scanf("%d", &userId); // Use cin for input
                 // Placeholder for remove_student functionality
                 cout << "Remove student functionality\n";
                 break;
