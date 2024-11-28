@@ -7,7 +7,8 @@ using namespace std;
 
 const int teacherTests = 5;
 enum choices {add = 1, remove_std, display, search_std, results, quit};
-ofstream stdFile;
+ofstream stdFileOf;
+ifstream stdFileIf;
 // Student Struct
 struct Student {
     string name;
@@ -36,7 +37,7 @@ int getNumber() {
 }
 // Check if student file is open
 void fileCheck() {
-    if (!stdFile.is_open()) {
+    if (!stdFileOf.is_open()) {
         cout << "Error opening the file!\n";
         exit(EXIT_FAILURE);
     } else {
@@ -45,7 +46,7 @@ void fileCheck() {
 }
 // Add student to file
 void add_student() {
-    stdFile.open("student.dat", ios::app);
+    stdFileOf.open("student.dat", ios::app);
     fileCheck();
     Student tempStudent;
     string tempFirstName;
@@ -66,18 +67,38 @@ void add_student() {
         cin >> tempStudent.stdScore[i];
     }
     // write all the values into student.dat
-    stdFile << tempFirstName << "," << tempLastName << ",";
-    stdFile << tempStudent.stdId << "," << tempStudent.numOfTests << ",";
+    stdFileOf << tempFirstName << "," << tempLastName << ",";
+    stdFileOf << tempStudent.stdId << "," << tempStudent.numOfTests << ",";
     for (int i = 0; i < tempStudent.numOfTests; ++i) {
-        stdFile << tempStudent.stdScore[i] << ",";
+        stdFileOf << tempStudent.stdScore[i] << ",";
     }
     cout << "Student instance created. Exiting...\n";
-    stdFile.close();
+    stdFileOf.close();
 }
 // Remove student from file
 void remove_student(int stdID) {
+    int numOfStudents = getNumber();
+    Student tempStudent[numOfStudents];
+    Student* studentarr = new Student[numOfStudents];
+    string lastName, firstName;
+    int studentID, numOfGrades;
+    stdFileIf.open("student.dat");
 
-
+    // Read file
+    for (int i = 0; i < numOfStudents; i++) {
+        getline(stdFileIf, firstName, ',');
+        getline(stdFileIf, lastName, ',');
+        stdFileIf >> tempStudent[i].stdId;
+        stdFileIf.ignore();
+        stdFileIf >> tempStudent[i].numOfTests;
+        stdFileIf.ignore();
+        for (int j = 0; j < tempStudent[i].numOfTests; ++j) {
+            stdFileIf >> tempStudent[i].stdScore[j];
+            stdFileIf.ignore();
+        }
+        
+    }
+    stdFileIf.close();
 }
 
 int main() {
@@ -88,7 +109,7 @@ int main() {
     while (menuRepeat) {
 
         // Display menu
-        printf("\n----------------Student Database----------------\n\n");
+        printf("\n---------------- Student Database ----------------\n\n");
         printf("1. Add a new student record\n");
         printf("2. Remove an existing student record\n");
         printf("3. Display all records\n");
