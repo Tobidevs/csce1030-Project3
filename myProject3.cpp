@@ -3,6 +3,7 @@
 #include "getNumber.h"
 #include <fstream>
 #include <cstdlib>
+#include <iomanip>
 using namespace std;
 
 const int teacherTests = 5;
@@ -37,11 +38,11 @@ int getNumber() {
 }
 // Check if student file is open
 void fileCheck() {
-    if (!stdFileOf.is_open()) {
+    if (stdFileOf.is_open() || stdFileIf.is_open()) {
+        cout << "Student file opened.\n";
+    } else {
         cout << "Error opening the file!\n";
         exit(EXIT_FAILURE);
-    } else {
-        cout << "Student file opened.\n";
     }
 }
 // Add student to file
@@ -85,6 +86,7 @@ void remove_student(int stdID) {
     string lastName[numOfStudents];
     string firstName[numOfStudents];
     stdFileIf.open("student.dat");
+    fileCheck();
 
     // Read file
     for (int i = 0; i < numOfStudents; ++i) {
@@ -97,7 +99,7 @@ void remove_student(int stdID) {
         studentarr[i].stdScore = new int[studentarr[i].numOfTests];
         for (int j = 0; j < studentarr[i].numOfTests; ++j) {
             stdFileIf >> studentarr[i].stdScore[j];
-            if (i < numOfStudents - 1) stdFileIf.ignore();
+            stdFileIf.ignore();
         }
         // save first and last name to student arr
         studentarr[i].name = firstName[i] + " " + lastName[i];
@@ -108,10 +110,10 @@ void remove_student(int stdID) {
         }
     }
     stdFileIf.close();
-
+    
+    // rewrite studentarr contexts into student.dat 
     if (foundMatch) {
         stdFileOf.open("student.dat");
-        // todo fix file check
         fileCheck();
         for (int i = 0; i < numOfStudents; i++) {
             if (stdID != studentarr[i].stdId) {
@@ -121,16 +123,59 @@ void remove_student(int stdID) {
                 }
             }
         }
-        cout << "Student successfully removed." << endl;
+        cout << "Successfully removed student " << stdID << ". Exiting..." << endl;
         stdFileOf.close();
     } else {
         cout << "Student ID not found in system.";
     }
+    // Release allocated memory
     for (int i = 0; i < numOfStudents; i++) {
         delete[] studentarr[i].stdScore;
     }
     delete[] studentarr;
 }
+
+void display_std() {
+    stdFileIf.open("student.dat");
+    fileCheck();
+    int numOfStudents = getNumber();
+    Student* studentarr = new Student[numOfStudents];
+    string lastName[numOfStudents];
+    string firstName[numOfStudents];
+
+    // Read file
+    for (int i = 0; i < numOfStudents; ++i) {
+        getline(stdFileIf, lastName[i], ',');
+        getline(stdFileIf, firstName[i], ',');
+        stdFileIf >> studentarr[i].stdId;
+        stdFileIf.ignore();
+        stdFileIf >> studentarr[i].numOfTests;
+        stdFileIf.ignore();
+        studentarr[i].stdScore = new int[studentarr[i].numOfTests];
+        for (int j = 0; j < studentarr[i].numOfTests; ++j) {
+            stdFileIf >> studentarr[i].stdScore[j];
+            stdFileIf.ignore();
+        }
+        // save first and last name to student arr
+        studentarr[i].name = lastName[i] + "," + firstName[i];
+    }
+
+    // Display context of studentarr
+    cout << "--------------------------------------------------\n";
+    for (int i = 0; i < numOfStudents; ++i) {
+        cout << setw(30) << left << studentarr[i].name;
+        cout << setw(15) << left << studentarr[i].stdId;
+        for (int j = 0; j < studentarr[i].numOfTests; ++j) {
+            cout << setw(5) << left << studentarr[i].stdScore[j];
+        }
+    }
+    stdFileIf.close();
+    // Release allocated memory
+    for (int i = 0; i < numOfStudents; i++) {
+        delete[] studentarr[i].stdScore;
+    }
+    delete[] studentarr;
+};
 
 int main() {
     int userInt;
@@ -163,8 +208,7 @@ int main() {
                 break;
             }
             case display: {
-                // Placeholder for display functionality
-                cout << "Display all records functionality\n";
+                display_std();
                 break;
             }
             case search_std: {
