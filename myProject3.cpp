@@ -62,12 +62,14 @@ void add_student() {
     cout << "Enter number of tests taken by the student: ";
     cin >> tempStudent.numOfTests;
     printf("Enter tests scores of the student \n");
+
+    tempStudent.stdScore = new int[tempStudent.numOfTests];
     for (int i = 0; i < tempStudent.numOfTests; ++i) {
         cout << "Enter Score " << (i + 1) << ": ";
         cin >> tempStudent.stdScore[i];
     }
     // write all the values into student.dat
-    stdFileOf << tempFirstName << "," << tempLastName << ",";
+    stdFileOf << endl << tempFirstName << "," << tempLastName << ",";
     stdFileOf << tempStudent.stdId << "," << tempStudent.numOfTests << ",";
     for (int i = 0; i < tempStudent.numOfTests; ++i) {
         stdFileOf << tempStudent.stdScore[i] << ",";
@@ -80,14 +82,15 @@ void remove_student(int stdID) {
     int numOfStudents = getNumber();
     bool foundMatch = false;
     Student* studentarr = new Student[numOfStudents];
-    string lastName, firstName;
+    string lastName[numOfStudents];
+    string firstName[numOfStudents];
     stdFileIf.open("student.dat");
     int removedId;
 
     // Read file
     for (int i = 0; i < numOfStudents; ++i) {
-        getline(stdFileIf, firstName, ',');
-        getline(stdFileIf, lastName, ',');
+        getline(stdFileIf, firstName[i], ',');
+        getline(stdFileIf, lastName[i], ',');
         stdFileIf >> studentarr[i].stdId;
         stdFileIf.ignore();
         stdFileIf >> studentarr[i].numOfTests;
@@ -97,9 +100,10 @@ void remove_student(int stdID) {
             stdFileIf >> studentarr[i].stdScore[j];
             if (i < numOfStudents - 1) stdFileIf.ignore();
         }
-        cout << studentarr[0].stdScore[4];
-        // cout << firstName << ',' << lastName << ',' << studentarr[i].stdId << ',' << studentarr[i].numOfTests << endl;
-        // see if stuent id matches system
+        // save first and last name to student arr
+        studentarr[i].name = firstName[i] + " " + lastName[i];
+
+        // see if student id matches system
         if (stdID == studentarr[i].stdId) {
             foundMatch = true;
             removedId = studentarr[i].stdId;
@@ -108,19 +112,18 @@ void remove_student(int stdID) {
     stdFileIf.close();
 
     if (foundMatch) {
-        stdFileOf.open("student.dat", ios::app);
+        stdFileOf.open("student.dat");
+        // todo fix file check
         fileCheck();
         for (int i = 0; i < numOfStudents; i++) {
-            //for (int j = 0; j < numOfStudents; j++) {
-                if (stdID != studentarr[i].stdId) {
-                stdFileOf << firstName << ',' << lastName << ',' << studentarr[i].stdId << ',' << studentarr[i].numOfTests << ',';
-                // todo fix line in output
+            if (stdID != studentarr[i].stdId) {
+                stdFileOf << firstName[i] << ',' << lastName[i] << ',' << studentarr[i].stdId << ',' << studentarr[i].numOfTests << ',';
                 for (int j = 0; j < studentarr[i].numOfTests; j++) {
                     stdFileOf << studentarr[i].stdScore[j] << ',';
                 }
-                }
-            //}
+            }
         }
+        cout << "Student successfully removed.";
         stdFileOf.close();
     } else {
         cout << "Student ID not found in system.";
