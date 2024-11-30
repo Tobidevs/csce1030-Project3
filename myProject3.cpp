@@ -14,7 +14,7 @@ struct Student {
     string name;
     int stdId;
     int numOfTests;
-    int* stdScore = new int[numOfTests];
+    int* stdScore = nullptr;
     int stdAvg;
 };
 // Get student count
@@ -78,27 +78,54 @@ void add_student() {
 // Remove student from file
 void remove_student(int stdID) {
     int numOfStudents = getNumber();
-    Student tempStudent[numOfStudents];
+    bool foundMatch = false;
     Student* studentarr = new Student[numOfStudents];
     string lastName, firstName;
-    int studentID, numOfGrades;
     stdFileIf.open("student.dat");
+    int removedId;
 
     // Read file
-    for (int i = 0; i < numOfStudents; i++) {
+    for (int i = 0; i < numOfStudents; ++i) {
         getline(stdFileIf, firstName, ',');
         getline(stdFileIf, lastName, ',');
-        stdFileIf >> tempStudent[i].stdId;
+        stdFileIf >> studentarr[i].stdId;
         stdFileIf.ignore();
-        stdFileIf >> tempStudent[i].numOfTests;
+        stdFileIf >> studentarr[i].numOfTests;
         stdFileIf.ignore();
-        for (int j = 0; j < tempStudent[i].numOfTests; ++j) {
-            stdFileIf >> tempStudent[i].stdScore[j];
-            stdFileIf.ignore();
+        studentarr[i].stdScore = new int[studentarr[i].numOfTests];
+        for (int j = 0; j < studentarr[i].numOfTests; ++j) {
+            stdFileIf >> studentarr[i].stdScore[j];
+            if (i < numOfStudents - 1) stdFileIf.ignore();
         }
-        
+        cout << studentarr[0].stdScore[4];
+        // cout << firstName << ',' << lastName << ',' << studentarr[i].stdId << ',' << studentarr[i].numOfTests << endl;
+        // see if stuent id matches system
+        if (stdID == studentarr[i].stdId) {
+            foundMatch = true;
+            removedId = studentarr[i].stdId;
+        }
     }
     stdFileIf.close();
+
+    if (foundMatch) {
+        stdFileOf.open("student.dat", ios::app);
+        fileCheck();
+        for (int i = 0; i < numOfStudents; i++) {
+            //for (int j = 0; j < numOfStudents; j++) {
+                if (stdID != studentarr[i].stdId) {
+                stdFileOf << firstName << ',' << lastName << ',' << studentarr[i].stdId << ',' << studentarr[i].numOfTests << ',';
+                // todo fix line in output
+                for (int j = 0; j < studentarr[i].numOfTests; j++) {
+                    stdFileOf << studentarr[i].stdScore[j] << ',';
+                }
+                }
+            //}
+        }
+        stdFileOf.close();
+    } else {
+        cout << "Student ID not found in system.";
+    }
+    delete[] studentarr;
 }
 
 int main() {
