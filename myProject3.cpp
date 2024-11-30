@@ -85,7 +85,6 @@ void remove_student(int stdID) {
     string lastName[numOfStudents];
     string firstName[numOfStudents];
     stdFileIf.open("student.dat");
-    int removedId;
 
     // Read file
     for (int i = 0; i < numOfStudents; ++i) {
@@ -106,7 +105,6 @@ void remove_student(int stdID) {
         // see if student id matches system
         if (stdID == studentarr[i].stdId) {
             foundMatch = true;
-            removedId = studentarr[i].stdId;
         }
     }
     stdFileIf.close();
@@ -123,10 +121,13 @@ void remove_student(int stdID) {
                 }
             }
         }
-        cout << "Student successfully removed.";
+        cout << "Student successfully removed." << endl;
         stdFileOf.close();
     } else {
         cout << "Student ID not found in system.";
+    }
+    for (int i = 0; i < numOfStudents; i++) {
+        delete[] studentarr[i].stdScore;
     }
     delete[] studentarr;
 }
