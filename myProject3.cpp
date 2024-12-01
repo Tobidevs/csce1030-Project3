@@ -134,8 +134,8 @@ void remove_student(int stdID) {
     }
     delete[] studentarr;
 }
-
-void display_std() {
+// display students 
+void display_student() {
     stdFileIf.open("student.dat");
     fileCheck();
     int numOfStudents = getNumber();
@@ -176,6 +176,55 @@ void display_std() {
     }
     delete[] studentarr;
 };
+// search students
+void search_students(int stdID) {
+    stdFileIf.open("student.dat");
+    fileCheck();
+    int numOfStudents = getNumber();
+    Student* studentPtr;
+    studentPtr = new Student;
+    bool foundMatch = false;
+    string firstName;
+    string lastName;
+
+    for (int i = 0; i < numOfStudents; ++i) {
+        getline(stdFileIf, firstName, ',');
+        getline(stdFileIf, lastName, ',');
+        stdFileIf >> studentPtr->stdId;
+        stdFileIf.ignore();
+        stdFileIf >> studentPtr->numOfTests;
+        stdFileIf.ignore();
+        studentPtr->stdScore = new int[studentPtr->numOfTests];
+        for (int j = 0; j < studentPtr->numOfTests; ++j) {
+            stdFileIf >> studentPtr->stdScore[j];
+            stdFileIf.ignore();
+        }
+        // save first and last name to student arr
+        studentPtr->name = firstName + " " + lastName;
+
+        if (stdID == studentPtr->stdId) {
+            foundMatch = true;
+            cout << "--------------------------------------------------";
+            cout << setw(30) << left << studentPtr->name;
+            cout << setw(15) << left << studentPtr->stdId;
+            for (int i = 0; i < studentPtr->numOfTests; ++i) {
+                cout << setw(5) << left << studentPtr->stdScore[i];
+            }
+            delete[] studentPtr->stdScore;
+            break;
+        }
+
+        // Free stdScore memory after each iteration
+        delete[] studentPtr->stdScore;
+    }
+
+    if (!foundMatch) {
+        cout << "Student not found.";
+    }
+    stdFileIf.close();
+    // Release allocated memory
+    delete studentPtr;
+}
 
 int main() {
     int userInt;
@@ -208,14 +257,13 @@ int main() {
                 break;
             }
             case display: {
-                display_std();
+                display_student();
                 break;
             }
             case search_std: {
                 cout << "Enter the Student ID: ";
                 cin >> userId; // Use cin for input
-                // Placeholder for search functionality
-                cout << "Search student functionality\n";
+                search_students(userId);
                 break;
             }
             case results: {
