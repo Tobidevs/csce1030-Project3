@@ -16,7 +16,7 @@ struct Student {
     int stdId;
     int numOfTests;
     int* stdScore = nullptr;
-    int stdAvg;
+    double stdAvg;
 };
 // Get student count
 int getNumber() {
@@ -35,6 +35,21 @@ int getNumber() {
     fin.close();
     cout << "Number of students = " << count << endl;
     return(count);
+}
+// find minimum
+int find_minimum (int stdarr[], int numOfTests) {
+    int min = stdarr[0];
+    if (numOfTests < teacherTests) {
+        return 0;
+    }
+
+    // find the minimum in stdarr
+    for (int i = 0; i < numOfTests; ++i) {
+        if (stdarr[i] < min) {
+            min = stdarr[i];
+        }
+    }
+    return min;
 }
 // Check if student file is open
 void fileCheck() {
@@ -225,7 +240,61 @@ void search_students(int stdID) {
     // Release allocated memory
     delete studentPtr;
 }
+// Export resuluts
+void export_results() {
+    stdFileIf.open("student.dat");
+    fileCheck();
+    int numOfStudents = getNumber();
+    Student* studentarr = new Student[numOfStudents];
+    string lastName[numOfStudents];
+    string firstName[numOfStudents];
+    int min;
 
+    // Read file
+    for (int i = 0; i < numOfStudents; ++i) {
+        getline(stdFileIf, firstName[i], ',');
+        getline(stdFileIf, lastName[i], ',');
+        stdFileIf >> studentarr[i].stdId;
+        stdFileIf.ignore();
+        stdFileIf >> studentarr[i].numOfTests;
+        stdFileIf.ignore();
+        studentarr[i].stdScore = new int[studentarr[i].numOfTests];
+        for (int j = 0; j < studentarr[i].numOfTests; ++j) {
+            stdFileIf >> studentarr[i].stdScore[j];
+            stdFileIf.ignore();
+        }
+        // save first and last name to student arr
+        studentarr[i].name = firstName[i] + " " + lastName[i];
+    }
+    stdFileIf.close();
+
+    stdFileOf.open("averages.dat", ios::app);
+    fileCheck();
+    for (int i = 0; i < numOfStudents; ++i) {
+        for (int j = 0; j < studentarr[i].numOfTests; ++j) {
+            studentarr[i].stdAvg += studentarr[i].stdScore[j];
+        }
+        // find min value and adjust score if necessary
+        min = find_minimum(studentarr[i].stdScore, studentarr[i].numOfTests);
+        if (min != 0) {
+        studentarr[i].stdAvg = (studentarr[i].stdAvg - min) / 4;
+        } else { 
+        studentarr[i].stdAvg /= studentarr[i].numOfTests;
+        }
+
+        stdFileOf << left;
+        stdFileOf << setw(15) << studentarr[i].stdId;
+        stdFileOf << setw(5) << fixed << setprecision(1) << studentarr[i].stdAvg << endl;
+    }
+    cout << "Results successfully exported to averages.dat.";
+    stdFileOf.close();
+
+    // Release allocated memory
+    for (int i = 0; i < numOfStudents; i++) {
+        delete[] studentarr[i].stdScore;
+    }
+    delete[] studentarr;
+}
 int main() {
     int userInt;
     int userId;
@@ -267,8 +336,7 @@ int main() {
                 break;
             }
             case results: {
-                // Placeholder for exportResults functionality
-                cout << "Export results functionality\n";
+                export_results();
                 break;
             }
             case quit: {
