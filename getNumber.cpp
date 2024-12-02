@@ -3,7 +3,7 @@
 #include "getNumber.h"
 using namespace std;
 
-/* int getNumber() {
+int getNumber() {
     ifstream fin;
     fin.open("student.dat");
     if (fin.fail()) {
@@ -21,4 +21,4 @@ using namespace std;
     cout << "Number of students = " << count << endl;
 
     return(count);
-} */
+}
