@@ -15,7 +15,7 @@ struct Student {
     string name;
     int stdId;
     int numOfTests;
-    int* stdScore = nullptr;
+    int* stdScore;
     double stdAvg;
 };
 // Get student count
@@ -234,13 +234,13 @@ void search_students(int stdID) {
     }
 
     if (!foundMatch) {
-        cout << "Student not found.";
+        cout << "Student not found in system.";
     }
     stdFileIf.close();
     // Release allocated memory
     delete studentPtr;
 }
-// Export resuluts
+// Export results
 void export_results() {
     stdFileIf.open("student.dat");
     fileCheck();
@@ -268,7 +268,7 @@ void export_results() {
     }
     stdFileIf.close();
 
-    stdFileOf.open("averages.dat", ios::app);
+    stdFileOf.open("averages.dat");
     fileCheck();
     for (int i = 0; i < numOfStudents; ++i) {
         for (int j = 0; j < studentarr[i].numOfTests; ++j) {
@@ -295,6 +295,7 @@ void export_results() {
     }
     delete[] studentarr;
 }
+
 int main() {
     int userInt;
     int userId;
