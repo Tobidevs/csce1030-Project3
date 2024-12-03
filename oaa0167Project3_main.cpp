@@ -14,8 +14,7 @@ int main() {
         printf("4. Search for student using Student ID\n");
         printf("5. Export the results to a disk file\n");
         printf("6. Quit the program\n");
-        printf("Enter choice: ");
-        scanf("%d", &userInt);
+        userInt = getValidInt("Enter choice: ");
 
         // Display menu functionality
         switch (userInt) {
@@ -24,8 +23,7 @@ int main() {
                 break;
             }
             case remove_std: {
-                cout << "Enter the Student ID: ";
-                cin >> userId;
+                userId = getValidInt("Enter the Student ID: ");
                 remove_student(userId);
                 break;
             }
@@ -34,8 +32,7 @@ int main() {
                 break;
             }
             case search_std: {
-                cout << "Enter the Student ID: ";
-                cin >> userId;
+                userId = getValidInt("Enter the Student ID: ");
                 search_students(userId);
                 break;
             }

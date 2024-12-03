@@ -2,6 +2,37 @@
 ofstream stdFileOf; // Define the global file objects
 ifstream stdFileIf;
 
+// Function to get valid integer input
+int getValidInt(const string& prompt) {
+    int value;
+    while (true) {
+        cout << prompt;
+        cin >> value;
+
+        if (cin.fail()) { // Check for invalid input
+            cout << "Invalid input. Please enter a valid number.\n";
+            cin.clear(); // Clear the error state
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard invalid input
+        } else {
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Discard leftover input
+            return value;
+        }
+    }
+}
+// Function to get valid string input
+string getValidString(const string& prompt) {
+    string value;
+    while (true) {
+        cout << prompt;
+        getline(cin, value);
+
+        if (!value.empty()) { // Ensure the input is not empty
+            return value;
+        } else {
+            cout << "Input cannot be empty. Please try again.\n";
+        }
+    }
+}
 // Get student count
 int getNumber() {
     ifstream fin;
@@ -53,14 +84,10 @@ void add_student() {
     string tempLastName;
 
     // get values from user
-    cout << "Enter student first name: ";
-    cin >> tempFirstName;
-    cout << "Enter student last name: ";
-    cin >> tempLastName;
-    cout << "Enter Student ID: ";
-    cin >> tempStudent.stdId;
-    cout << "Enter number of tests taken by the student: ";
-    cin >> tempStudent.numOfTests;
+    tempFirstName = getValidString("Enter Student first name: ");
+    tempLastName = getValidString("Enter Student last name: ");
+    tempStudent.stdId = getValidInt("Enter Student ID: ");
+    tempStudent.numOfTests = getValidInt("Enter number of tests taken by the student: ");
     printf("Enter tests scores of the student \n");
 
     tempStudent.stdScore = new int[tempStudent.numOfTests];

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <iomanip>
+#include <limits>
 
 using namespace std;
 
@@ -23,6 +24,8 @@ struct Student {
 };
 
 // Function declarations
+int getValidInt(const string& prompt);
+string getValidString(const string& prompt);
 int getNumber();
 int find_minimum(int stdarr[], int numOfTests);
 void fileCheck();
