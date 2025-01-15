@@ -34,38 +34,38 @@ string getValidString(const string& prompt) {
     }
 }
 // Get student count
-int getNumber() {
-    ifstream fin;
-    fin.open("student.dat");
-    if (fin.fail()) {
-        cout << "File error." << endl;
-        exit(1);
-    }
-    int count = 0;
-    string line;
-    while(!fin.eof()) {
-        getline(fin, line);
-        ++count;
-    }
-    fin.close();
-    cout << "Number of students = " << count << endl;
-    return(count);
-}
-// find minimum
-int find_minimum (int stdarr[], int numOfTests) {
-    int min = stdarr[0];
-    if (numOfTests < teacherTests) {
-        return 0;
-    }
+// int getNumber() {
+//     ifstream fin;
+//     fin.open("student.dat");
+//     if (fin.fail()) {
+//         cout << "File error." << endl;
+//         exit(1);
+//     }
+//     int count = 0;
+//     string line;
+//     while(!fin.eof()) {
+//         getline(fin, line);
+//         ++count;
+//     }
+//     fin.close();
+//     cout << "Number of students = " << count << endl;
+//     return(count);
+// }
+// // find minimum
+// int find_minimum (int stdarr[], int numOfTests) {
+//     int min = stdarr[0];
+//     if (numOfTests < teacherTests) {
+//         return 0;
+//     }
 
-    // find the minimum in stdarr
-    for (int i = 0; i < numOfTests; ++i) {
-        if (stdarr[i] < min) {
-            min = stdarr[i];
-        }
-    }
-    return min;
-}
+//     // find the minimum in stdarr
+//     for (int i = 0; i < numOfTests; ++i) {
+//         if (stdarr[i] < min) {
+//             min = stdarr[i];
+//         }
+//     }
+//     return min;
+// }
 // Check if student file is open
 void fileCheck() {
     if (stdFileOf.is_open() || stdFileIf.is_open()) {
