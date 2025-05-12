@@ -112,7 +112,7 @@ void remove_student(int stdID) {
     string lastName[numOfStudents];
     string firstName[numOfStudents];
     stdFileIf.open("student.dat");
-    fileCheck();
+    fileCheck(); 
 
     // Read file
     for (int i = 0; i < numOfStudents; ++i) {

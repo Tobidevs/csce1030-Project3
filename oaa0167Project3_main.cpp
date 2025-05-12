@@ -15,6 +15,7 @@ int main() {
         printf("5. Export the results to a disk file\n");
         printf("6. Quit the program\n");
         userInt = getValidInt("Enter choice: ");
+        
 
         // Display menu functionality
         switch (userInt) {
